@@ -1,27 +1,40 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:test_site_web/models/balade.dart';
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../models/firebase_file.dart';
 
 class FirestoreApi {
-  static var db = FirebaseFirestore.instance;
+  //permet de récup le liens de dl des fichiers
+  static Future<List<String>> _getDownloadLinks(List<Reference> refs) =>
+      Future.wait(refs.map((ref) => ref.getDownloadURL()).toList());
 
-  Future<List<Balade>> getBalade() async {
-    /*
-    Balade balade1 = await db
-        .collection('balades')
-        .doc('balade1')
-        .get()
-        .then((snapshot) => Balade.fromMap(snapshot.data()!));
-    Balade balade2 = await db
-        .collection('balades')
-        .doc('balade2')
-        .get()
-        .then((snapshot) => Balade.fromMap(snapshot.data()!));*/
+  //permet de récup la liste des fichiers dans le dossier "path" sur le firebase
+  static Future<List<FirebaseFile>> listAll(String path) async {
+    final ref = FirebaseStorage.instance.ref(path);
+    final result = await ref.listAll();
 
-    return await db
-        .collection('balades')
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Balade.fromMap(doc.data())).toList())
-        .first;
+    final urls = await _getDownloadLinks(result.items);
+
+    return urls
+        .asMap()
+        .map((index, url) {
+          final ref = result.items[index];
+          final name = ref.name;
+          final file = FirebaseFile(ref: ref, name: name, url: url);
+
+          return MapEntry(index, file);
+        })
+        .values
+        .toList();
+  }
+
+  //permet de download un fichier et de le sauvegarder
+  static Future downloadFile(Reference ref) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File('${dir.path}/${ref.name}');
+
+    await ref.writeToFile(file);
   }
 }

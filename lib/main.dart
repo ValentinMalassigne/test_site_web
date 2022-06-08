@@ -7,8 +7,9 @@ import 'package:test_site_web/map.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:test_site_web/models/balade.dart';
 import 'package:test_site_web/providers/balades_provider.dart';
-import 'package:test_site_web/services/firestore_api.dart';
 import 'firebase_options.dart';
+import 'services/firebase_api.dart';
+import 'widgets/box_section.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,12 +21,12 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
-  final FirestoreApi _firestoreApi = FirestoreApi();
+  final FirebaseApi _firebaseApi = FirebaseApi();
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => BaladeProvider(allBalade: []),
+        create: (context) => BaladeProvider(allBalade: [Balade()]),
         builder: (context, child) {
           return MaterialApp(
             title: 'Flutter Demo',
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
             ),
             home: FutureBuilder<List<Balade>>(
-                future: _firestoreApi.getBalade(),
+                future: _firebaseApi.getBalade(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     if (snapshot.hasError == false) {
@@ -77,7 +78,70 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  String platfrom = '';
+  @override
+  Widget build(BuildContext context) {
+    provider = Provider.of<BaladeProvider>(context);
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+            bottom: const TabBar(tabs: [
+              Tab(text: "Balade Patrimoine"),
+              Tab(text: "Balade Nature"),
+              Tab(text: "Carte")
+            ]),
+            title: Text(provider.allBalade.first.name)),
+        body: const TabBarView(
+          children: [
+            //boxList(0),
+            Icon(Icons.directions_transit),
+            Icon(Icons.directions_car),
+            Center(
+              child: GoogleMapWidget(),
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: startGoogleMapNavigation,
+          tooltip: 'Increment',
+          child: const Icon(Icons.add),
+        ), // This trailing comma makes auto-formatting nicer for build methods.
+      ),
+    );
+  }
+
+  Widget boxList(int baladeIndex) {
+    List<Balade> baladeList = Provider.of<BaladeProvider>(context).allBalade;
+    print(baladeList[0].description);
+    return ListView.builder(
+      itemCount: baladeList[baladeIndex].wayPointsLst?.length,
+      scrollDirection: Axis.vertical,
+      physics: const BouncingScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (_, index) {
+        int cpt =
+            0; // on fait appel à un compteur car l'index 0 l'image est vide ça va faire de la merde avec les marges
+        // on vérifie qu'il y a bien une image à afficher
+        if (baladeList[baladeIndex].wayPointsLst?[index].firebaseFile != null) {
+          double rightMargin = 0;
+          double leftMargin = 0;
+          cpt != 0 ? rightMargin = 15 : rightMargin = 45;
+          cpt != 0 ? leftMargin = 15 : leftMargin = 45;
+          cpt++;
+          return boxListSection(
+            index,
+            rightMargin,
+            leftMargin,
+            baladeList[baladeIndex].wayPointsLst![index],
+            baladeList[baladeIndex],
+            //() => _goToPreview(baladeIndex0),
+          );
+        }
+        return Container();
+      },
+    );
+  }
+
   void startGoogleMapNavigation() async {
     String baseURL = "https://www.google.com/maps/dir/?api=1";
     String origin = "&origin=";
@@ -92,44 +156,5 @@ class _MyHomePageState extends State<MyHomePage> {
     html.window.open(
         baseURL + origin + destination + travelMode + wayPointsString,
         "_blank");
-  }
-
-  void _incrementCounter() {
-    if (kIsWeb) {
-      platfrom = defaultTargetPlatform.name;
-      switch (platfrom) {
-        case "windows":
-          print("je suis windows");
-          startGoogleMapNavigation();
-          break;
-        case "android":
-          startGoogleMapNavigation();
-          break;
-        case "iOS":
-          print("je suis un pigeon");
-          break;
-        case "macOS":
-          print("je suis un pigeon mac");
-          break;
-        default:
-      }
-    }
-
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(provider.allBalade.first.name)),
-      body: Center(
-        child: GoogleMapWidget(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
   }
 }

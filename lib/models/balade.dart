@@ -103,4 +103,19 @@ factory User.fromJson(Map<String, dynamic> map) {
         duration.hashCode ^
         wayPointsLst.hashCode;
   }
+
+  static void addWayPointImagesToBalade(
+      Balade balade, List<FirebaseFile> firebaseFile) {
+    List<Waypoint> wplst = [];
+    for (int i = 0; i < balade.wayPointsLst!.length; i++) {
+      print("idex $i");
+      wplst.add(Waypoint(
+          coordinates: LatLng(balade.wayPointsLst![i].coordinates.lat,
+              balade.wayPointsLst![i].coordinates.lng),
+          description: balade.wayPointsLst![i].description,
+          title: balade.wayPointsLst![i].title,
+          firebaseFile: firebaseFile[i]));
+    }
+    balade.wayPointsLst = wplst;
+  }
 }

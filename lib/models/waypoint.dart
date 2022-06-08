@@ -2,14 +2,18 @@ import 'dart:convert';
 
 import 'package:google_maps/google_maps.dart';
 
+import 'firebase_file.dart';
+
 class Waypoint {
   LatLng coordinates;
   String description;
   String title;
+  FirebaseFile? firebaseFile;
   Waypoint({
     required this.coordinates,
     required this.description,
     required this.title,
+    this.firebaseFile,
   });
 
   Waypoint copyWith({
