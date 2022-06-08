@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "395996891541",
+    "project_id": "velo-chato",
+    "storage_bucket": "velo-chato.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395996891541:android:5c64c3fb7b697d134b8e9c",
+        "android_client_info": {
+          "package_name": "com.example.test_site_web"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395996891541-o4mav5h8n7e2c9akpu2ss5cq63il806m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzVf1y8QeEv5x5rVFKH85AxOzDR4azGNQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395996891541-o4mav5h8n7e2c9akpu2ss5cq63il806m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "395996891541-18nl2003po1mdfhihr6oe6c5qfjoac7c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.veloChatoVillier"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395996891541:android:200fdadb27f5aa744b8e9c",
+        "android_client_info": {
+          "package_name": "com.velochatovillier.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395996891541-o4mav5h8n7e2c9akpu2ss5cq63il806m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzVf1y8QeEv5x5rVFKH85AxOzDR4azGNQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395996891541-o4mav5h8n7e2c9akpu2ss5cq63il806m.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "395996891541-18nl2003po1mdfhihr6oe6c5qfjoac7c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.veloChatoVillier"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
