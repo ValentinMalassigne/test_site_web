@@ -25,15 +25,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-=======
     return ChangeNotifierProvider(
         create: (context) => BaladeProvider(allBalade: [Balade()]),
         builder: (context, child) {
@@ -69,18 +60,11 @@ class MyApp extends StatelessWidget {
                 }),
           );
         });
->>>>>>> master
   }
 }
 
 class MyHomePage extends StatefulWidget {
-<<<<<<< HEAD
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-=======
   MyHomePage({Key? key}) : super(key: key);
->>>>>>> master
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -166,10 +150,6 @@ class _MyHomePageState extends State<MyHomePage> {
     String wayPointsString = "&waypoints=";
 
     wayPointsString += "48.947144%2C3.964808%7C";
-<<<<<<< HEAD
-
-=======
->>>>>>> master
     origin += "50.352373%2C2.854887";
     destination += "48.832315%2C1.486328";
     print(baseURL + origin + destination + travelMode + wayPointsString);
@@ -177,61 +157,4 @@ class _MyHomePageState extends State<MyHomePage> {
         baseURL + origin + destination + travelMode + wayPointsString,
         "_blank");
   }
-<<<<<<< HEAD
-
-  void _incrementCounter() {
-    if (kIsWeb) {
-      String platform = defaultTargetPlatform.name;
-      switch (platform) {
-        case "windows":
-          print("je suis windows");
-          startGoogleMapNavigation();
-          break;
-        case "android":
-          startGoogleMapNavigation();
-          break;
-        case "iOS":
-          print("je suis un pigeon");
-          break;
-        case "macOS":
-          print("je suis un pigeon mac");
-          break;
-        default:
-      }
-    }
-
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
-=======
->>>>>>> master
 }
