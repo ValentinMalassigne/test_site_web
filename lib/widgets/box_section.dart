@@ -7,7 +7,7 @@ Widget boxListSection(
   int index,
   double marginRight,
   double marginLeft,
-  Waypoint waypoint,
+  Waypoint? waypoint,
   Balade balade,
   //void Function() onBtnClick,
 ) {
@@ -20,7 +20,7 @@ Widget boxListSection(
         decoration: BoxDecoration(
           border: Border.all(
               color: const Color.fromARGB(255, 185, 185, 185), width: 1.0),
-          image: boxListSelectionBackGroundImage(waypoint.firebaseFile!.url),
+          image: boxListSelectionBackGroundImage(waypoint!.firebaseFile!.url),
           color: const Color.fromARGB(255, 245, 245, 245),
           borderRadius: const BorderRadius.all(Radius.circular(15.0)),
           boxShadow: [
@@ -76,7 +76,7 @@ Widget boxListSection(
           ),
         ),
       ),
-      SizedBox(height: 10),
+      const SizedBox(height: 10),
       Container(
         margin: EdgeInsets.only(right: marginRight, left: marginLeft),
         width: 320,

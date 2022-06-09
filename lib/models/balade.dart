@@ -62,7 +62,7 @@ factory User.fromJson(Map<String, dynamic> map) {
 */
 
   factory Balade.fromMap(Map<String, dynamic> map) {
-    print('json recup $map');
+    //print('json recup $map');
     List<Waypoint> wp = [];
     if (map['wayPoints'] != null) {
       var lst = map['wayPoints'] as List;
