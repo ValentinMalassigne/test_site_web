@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_maps/google_maps.dart' hide Icon;
 import 'package:provider/provider.dart';
 import 'dart:html' as html;
 import 'package:test_site_web/map.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:test_site_web/models/balade.dart';
 import 'package:test_site_web/models/waypoint.dart';
 import 'package:test_site_web/providers/balades_provider.dart';
+import 'package:test_site_web/widgets/map_section.dart';
 import 'firebase_options.dart';
 import 'services/firebase_api.dart';
 import 'widgets/box_section.dart';
@@ -88,11 +90,14 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Scaffold(
         appBar: AppBar(
             backgroundColor: Colors.green,
-            bottom: const TabBar(tabs: [
-              Tab(text: "Balade Patrimoine"),
-              Tab(text: "Balade Nature"),
-              Tab(text: "Carte")
-            ]),
+            bottom: const TabBar(
+              onTap: (value) {},
+              tabs: [
+                Tab(text: "Balade Patrimoine"),
+                Tab(text: "Balade Nature"),
+                Tab(text: "Carte")
+              ],
+            ),
             title: Text("Velo-Chato")),
         body: TabBarView(
           children: [
@@ -112,6 +117,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  updateMap(List<Waypoint>? wayPoints, DirectionsRenderer directionsDisplay) {
+    GoogleMapWidget.calcRoute(directionsDisplay, wayPoints!);
+  }
+
   Widget boxList(int baladeIndex) {
     List<Balade> baladeList = Provider.of<BaladeProvider>(context).allBalade;
     if (baladeList.isEmpty ||
@@ -122,18 +131,27 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     } else {
       return ListView.builder(
-        itemCount: baladeList[baladeIndex].wayPointsLst!.length,
+        itemCount: baladeList[baladeIndex].wayPointsLst!.length + 1,
         scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),
         itemBuilder: (_, index) {
-          return boxListSection(
-            index,
-            0,
-            0,
-            baladeList[baladeIndex].wayPointsLst![index],
-            baladeList[baladeIndex],
-            //() => _goToPreview(baladeIndex0),
-          );
+          if (index == baladeList[baladeIndex].wayPointsLst!.length) {
+            return mapSection(
+              0,
+              0,
+              baladeList[baladeIndex],
+              //() => _goToPreview(baladeIndex0),
+            );
+          } else {
+            return boxListSection(
+              index,
+              0,
+              0,
+              baladeList[baladeIndex].wayPointsLst![index],
+              baladeList[baladeIndex],
+              //() => _goToPreview(baladeIndex0),
+            );
+          }
         },
       );
     }
@@ -181,7 +199,6 @@ class _MyHomePageState extends State<MyHomePage> {
     wayPointsString += "48.947144%2C3.964808%7C";
     origin += "50.352373%2C2.854887";
     destination += "48.832315%2C1.486328";
-    print(baseURL + origin + destination + travelMode + wayPointsString);
     html.window.open(
         baseURL + origin + destination + travelMode + wayPointsString,
         "_blank");
