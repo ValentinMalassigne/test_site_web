@@ -41,7 +41,7 @@ Widget boxListSection(
             child: Stack(
               alignment: Alignment.bottomCenter,
               children: [
-                index == 1
+                index == 0
                     ? Positioned(
                         top: 10,
                         right: 15,

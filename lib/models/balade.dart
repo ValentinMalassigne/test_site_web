@@ -108,7 +108,6 @@ factory User.fromJson(Map<String, dynamic> map) {
       Balade balade, List<FirebaseFile> firebaseFile) {
     List<Waypoint> wplst = [];
     for (int i = 0; i < balade.wayPointsLst!.length; i++) {
-      print("idex $i");
       wplst.add(Waypoint(
           coordinates: LatLng(balade.wayPointsLst![i].coordinates.lat,
               balade.wayPointsLst![i].coordinates.lng),

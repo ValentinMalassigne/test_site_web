@@ -6,6 +6,7 @@ import 'dart:html' as html;
 import 'package:test_site_web/map.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:test_site_web/models/balade.dart';
+import 'package:test_site_web/models/waypoint.dart';
 import 'package:test_site_web/providers/balades_provider.dart';
 import 'firebase_options.dart';
 import 'services/firebase_api.dart';
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-        create: (context) => BaladeProvider(allBalade: [Balade()]),
+        create: (context) =>
+            BaladeProvider(allBalade: [Balade(wayPointsLst: [])]),
         builder: (context, child) {
           return MaterialApp(
             title: 'Flutter Demo',
@@ -85,18 +87,18 @@ class _MyHomePageState extends State<MyHomePage> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+            backgroundColor: Colors.green,
             bottom: const TabBar(tabs: [
               Tab(text: "Balade Patrimoine"),
               Tab(text: "Balade Nature"),
               Tab(text: "Carte")
             ]),
-            title: Text(provider.allBalade.first.name)),
-        body: const TabBarView(
+            title: Text("Velo-Chato")),
+        body: TabBarView(
           children: [
-            //boxList(0),
-            Icon(Icons.directions_transit),
-            Icon(Icons.directions_car),
-            Center(
+            boxList(0),
+            boxList(1),
+            const Center(
               child: GoogleMapWidget(),
             ),
           ],
@@ -111,6 +113,33 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Widget boxList(int baladeIndex) {
+    List<Balade> baladeList = Provider.of<BaladeProvider>(context).allBalade;
+    if (baladeList.isEmpty ||
+        baladeList[0].wayPointsLst!.isEmpty ||
+        baladeList[0].wayPointsLst![0].firebaseFile == null) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else {
+      return ListView.builder(
+        itemCount: baladeList[baladeIndex].wayPointsLst!.length,
+        scrollDirection: Axis.vertical,
+        physics: const BouncingScrollPhysics(),
+        itemBuilder: (_, index) {
+          return boxListSection(
+            index,
+            0,
+            0,
+            baladeList[baladeIndex].wayPointsLst![index],
+            baladeList[baladeIndex],
+            //() => _goToPreview(baladeIndex0),
+          );
+        },
+      );
+    }
+  }
+
+  /*Widget boxList(int baladeIndex) {
     List<Balade> baladeList = Provider.of<BaladeProvider>(context).allBalade;
     print(baladeList[0].description);
     return ListView.builder(
@@ -140,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return Container();
       },
     );
-  }
+  }*/
 
   void startGoogleMapNavigation() async {
     String baseURL = "https://www.google.com/maps/dir/?api=1";
