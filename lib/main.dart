@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_maps/google_maps.dart' hide Icon;
 import 'package:provider/provider.dart';
-import 'dart:html' as html;
+
 import 'package:test_site_web/map.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:test_site_web/models/balade.dart';
 import 'package:test_site_web/models/waypoint.dart';
 import 'package:test_site_web/providers/balades_provider.dart';
+import 'package:test_site_web/providers/directionsDisplay_provider.dart';
 import 'package:test_site_web/widgets/map_section.dart';
 import 'firebase_options.dart';
 import 'services/firebase_api.dart';
@@ -28,42 +29,48 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) =>
-            BaladeProvider(allBalade: [Balade(wayPointsLst: [])]),
-        builder: (context, child) {
-          return MaterialApp(
-            title: 'Flutter Demo',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
-            home: FutureBuilder<List<Balade>>(
-                future: _firebaseApi.getBalade(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    if (snapshot.hasError == false) {
-                      // update the provider with call back because of being inside a future builder
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        Provider.of<BaladeProvider>(context, listen: false)
-                            .updateBalades(snapshot.data!);
-                      });
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) =>
+              BaladeProvider(allBalade: [Balade(wayPointsLst: [])]),
+        ),
+        ChangeNotifierProvider(
+            create: ((context) => DirectionsDisplayProvider(
+                directionsDisplay: DirectionsRenderer()))),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: FutureBuilder<List<Balade>>(
+            future: _firebaseApi.getBalade(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError == false) {
+                  // update the provider with call back because of being inside a future builder
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Provider.of<BaladeProvider>(context, listen: false)
+                        .updateBalades(snapshot.data!);
+                  });
 
-                      return MyHomePage();
-                    } else {
-                      return Scaffold(
-                        body: Center(child: Text(snapshot.error.toString())),
-                      );
-                    }
-                  }
-                  // loading
-                  else {
-                    return const Scaffold(
-                      body: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                }),
-          );
-        });
+                  return MyHomePage();
+                } else {
+                  return Scaffold(
+                    body: Center(child: Text(snapshot.error.toString())),
+                  );
+                }
+              }
+              // loading
+              else {
+                return const Scaffold(
+                  body: Center(child: CircularProgressIndicator()),
+                );
+              }
+            }),
+      ),
+    );
   }
 }
 
@@ -91,7 +98,6 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
             backgroundColor: Colors.green,
             bottom: const TabBar(
-              onTap: (value) {},
               tabs: [
                 Tab(text: "Balade Patrimoine"),
                 Tab(text: "Balade Nature"),
@@ -108,17 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: startGoogleMapNavigation,
-          tooltip: 'Increment',
-          child: const Icon(Icons.add),
-        ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
     );
-  }
-
-  updateMap(List<Waypoint>? wayPoints, DirectionsRenderer directionsDisplay) {
-    GoogleMapWidget.calcRoute(directionsDisplay, wayPoints!);
   }
 
   Widget boxList(int baladeIndex) {
@@ -189,18 +186,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }*/
 
-  void startGoogleMapNavigation() async {
-    String baseURL = "https://www.google.com/maps/dir/?api=1";
-    String origin = "&origin=";
-    String destination = "&destination=";
-    String travelMode = "&travelmode=bicycling";
-    String wayPointsString = "&waypoints=";
-
-    wayPointsString += "48.947144%2C3.964808%7C";
-    origin += "50.352373%2C2.854887";
-    destination += "48.832315%2C1.486328";
-    html.window.open(
-        baseURL + origin + destination + travelMode + wayPointsString,
-        "_blank");
-  }
 }

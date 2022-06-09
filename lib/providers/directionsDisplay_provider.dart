@@ -3,9 +3,9 @@ import 'package:google_maps/google_maps.dart';
 
 import '../models/waypoint.dart';
 
-class BaladeProvider extends ChangeNotifier {
+class DirectionsDisplayProvider extends ChangeNotifier {
   DirectionsRenderer directionsDisplay = DirectionsRenderer();
-  BaladeProvider({
+  DirectionsDisplayProvider({
     required this.directionsDisplay,
   });
 

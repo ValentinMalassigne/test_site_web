@@ -2,7 +2,9 @@ import 'dart:html';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:google_maps/google_maps.dart';
+import 'package:provider/provider.dart';
 import 'package:test_site_web/models/waypoint.dart';
+import 'package:test_site_web/providers/directionsDisplay_provider.dart';
 
 class GoogleMapWidget extends StatelessWidget {
   const GoogleMapWidget({Key? key, this.wayPoints}) : super(key: key);
@@ -10,8 +12,8 @@ class GoogleMapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String htmlId = "7";
-    late DirectionsRenderer directionsDisplay;
-    directionsDisplay = DirectionsRenderer();
+    DirectionsRenderer directionsDisplay =
+        Provider.of<DirectionsDisplayProvider>(context).directionsDisplay;
 
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(htmlId, (int viewId) {
@@ -40,8 +42,9 @@ class GoogleMapWidget extends StatelessWidget {
     });
 
     if (wayPoints != null) {
-      calcRoute(directionsDisplay, wayPoints!);
-    }
+      Provider.of<DirectionsDisplayProvider>(context).calcRoute(wayPoints!);
+    } else {}
+
     return HtmlElementView(viewType: htmlId);
   }
 }
